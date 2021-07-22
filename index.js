@@ -115,12 +115,14 @@ const addEmployee = async () => {
         type: 'list',
         message: 'What is the employees role?',
         choices: [{
+
           name: 'Lead Engineer', value: 1,
-          name: 'Engineer', value: 2,
+          name: 'Engineer', value: 2, 
           name: 'Sales Lead', value: 3,
           name: 'Sales Person', value: 4,
           name: 'HR', value: 5,
           name: 'Lawyer', value: 6,
+          
         }]
       },
       {
@@ -128,14 +130,14 @@ const addEmployee = async () => {
         type: 'list',
         message: 'Who is the employees manager?',
         choices: [{
-          roleChoices: {
+          
             name: 'Ali Wong', value: 1,
             name: 'Amy Schumer', value: 4,
             name: 'Tom Segura', value: 6,
             name: 'Iliza Shlesinger', value: 9,
             name: 'Bernie Mac', value: 10,
             name: 'None', value: null,
-          }
+         
         }]
       }
     ]);
