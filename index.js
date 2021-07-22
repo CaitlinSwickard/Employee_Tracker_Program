@@ -114,31 +114,31 @@ const addEmployee = async () => {
         name: 'role',
         type: 'list',
         message: 'What is the employees role?',
-        choices: [{
+        choices: [
 
-          name: 'Lead Engineer', value: 1,
-          name: 'Engineer', value: 2, 
-          name: 'Sales Lead', value: 3,
-          name: 'Sales Person', value: 4,
-          name: 'HR', value: 5,
-          name: 'Lawyer', value: 6,
-          
-        }]
+          {name: 'Lead Engineer', value: 1},
+          {name: 'Engineer', value: 2}, 
+          {name: 'Sales Lead', value: 3},
+          {name: 'Sales Person', value: 4},
+          {name: 'HR', value: 5},
+          {name: 'Lawyer', value: 6},
+
+        ]
       },
       {
         name: 'manager',
         type: 'list',
         message: 'Who is the employees manager?',
-        choices: [{
+        choices: [
           
-            name: 'Ali Wong', value: 1,
-            name: 'Amy Schumer', value: 4,
-            name: 'Tom Segura', value: 6,
-            name: 'Iliza Shlesinger', value: 9,
-            name: 'Bernie Mac', value: 10,
-            name: 'None', value: null,
+            {name: 'Ali Wong', value: 1},
+            {name: 'Amy Schumer', value: 4},
+            {name: 'Tom Segura', value: 6},
+            {name: 'Iliza Shlesinger', value: 9},
+            {name: 'Bernie Mac', value: 10},
+            {name: 'None', value: null}
          
-        }]
+        ]
       }
     ]);
     const query = 'INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES(?, ?, ?, ?)';
