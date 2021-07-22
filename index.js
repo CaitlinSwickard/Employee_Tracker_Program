@@ -114,33 +114,35 @@ const addEmployee = async () => {
         name: 'role',
         type: 'list',
         message: 'What is the employees role?',
-        choices: [
-          'Lead Engineer',
-          'Engineer',
-          'Sales Lead',
-          'Sales Person',
-          'HR',
-          'Lawyer'
-        ]
+        choices: [{
+          name: 'Lead Engineer', value: 1,
+          name: 'Engineer', value: 2,
+          name: 'Sales Lead', value: 3,
+          name: 'Sales Person', value: 4,
+          name: 'HR', value: 5,
+          name: 'Lawyer', value: 6,
+        }]
       },
       {
         name: 'manager',
         type: 'list',
         message: 'Who is the employees manager?',
-        choices: [
-          'Ali Wong',
-          'Amy Schumer',
-          'Tom Segura',
-          'Iliza Shlesinger',
-          'Bernie Mac',
-          'Null'
-        ]
+        choices: [{
+          roleChoices: {
+            name: 'Ali Wong', value: 1,
+            name: 'Amy Schumer', value: 4,
+            name: 'Tom Segura', value: 6,
+            name: 'Iliza Shlesinger', value: 9,
+            name: 'Bernie Mac', value: 10,
+            name: 'None', value: null,
+          }
+        }]
       }
     ]);
     const query = 'INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES(?, ?, ?, ?)';
     connection.query(query, [first, last, role, manager], (err, result) => {
       if (err) throw err;
-      console.log('I AM THE RESULT', result);
+      console.log('NEW EMPLOYEE ADDED:', result);
       connection.end();
     });
   } catch (e) {
