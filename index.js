@@ -15,7 +15,7 @@ const connection = mysql.createConnection({
 // connection and initial prompt questions
 connection.connect(async (err) => {
   if (err) throw err;
-  console.log(`connected as id ${connection.threadId}\n`);
+  console.log(`Employee Tracker connection id ${connection.threadId}\n`);
   try {
     const mainQuestions = await inquirer.prompt([
       {
@@ -147,7 +147,7 @@ const addEmployee = async () => {
       console.log('NEW EMPLOYEE ADDED:', result);
       connection.end();
     });
-  } catch (e) {
+  } catch (err) {
     connection.end();
   }
 }
@@ -156,9 +156,25 @@ const addEmployee = async () => {
 //   connection.query
 // }
 
-// const addDepartment = () => {
-//   connection.query
-// }
+const addDepartment = async () => {
+  try {
+    const { name } = await inquirer.prompt([
+      {
+        name: 'addDepartment',
+        type: 'input',
+        message: 'What department would you like to add?'
+      }
+    ]);
+    const query = 'INSERT INTO departments (name) VALUES(?)';
+    connection.query(query, [name], (err, result) => {
+      if (err) throw err;
+      console.log('New department added', result);
+      connection.end();
+    });
+  } catch (err) {
+    connection.end();
+  }
+};
 
 // const updateEmpRole = () => {
 //   connection.query
