@@ -24,8 +24,8 @@ connection.connect(async (err) => {
         message: 'What would you like to do?',
         choices: [
           'View all employees?',
-          'View all employees by role?',
-          'View all employees by department?',
+          'View all employee roles?',
+          'View all departments?',
           'Add employee?',
           'Add role?',
           'Add department?',
@@ -46,10 +46,10 @@ const selections = async (userChoice) => {
   if (userChoice === 'View all employees?') {
     viewEmployee();
   }
-  if (userChoice === 'View all employees by role??') {
+  if (userChoice === 'View all employee roles?') {
     viewRole();
   }
-  if (userChoice === 'View all employees by department?') {
+  if (userChoice === 'View all departments?') {
     viewDepartment();
   }
   if (userChoice === 'Add employee?') {
@@ -72,9 +72,7 @@ const selections = async (userChoice) => {
 
 
 const viewEmployee = () => {
-  const query = `SELECT employees.id, employees.first_name, employees.last_name, role.title, departments.name AS department, role.salary, 
-  CONCAT(manager.first_name, ' ', manager.last_name) AS Manager FROM employees LEFT JOIN role on employees.role_id = role.id 
-  LEFT JOIN departments on role.department_id = departments.id LEFT JOIN employees manager on manager.id = employees.manager_id;`
+  const query = `SELECT * FROM employees INNER JOIN role ON employees.role_id = role.id`
   connection.query(query, (err, employees) => {
     if (err) throw err;
     console.table(employees);
@@ -83,7 +81,7 @@ const viewEmployee = () => {
 };
 
 const viewRole = () => {
-  const query = `select id AS Role_ID, title, salary AS Salaries from role;`;
+  const query = `SELECT * FROM departments`;
   connection.query(query, (err, role) => {
     if (err) throw err;
     console.table(role);
@@ -92,7 +90,7 @@ const viewRole = () => {
 };
 
 const viewDepartment = () => {
-  const query = `select id AS Dept_ID, name AS departments from departments;`;
+  const query = `SELECT * FROM role`;
   connection.query(query, (err, departments) => {
     if (err) throw err;
     console.table(departments);
@@ -148,34 +146,72 @@ const addEmployee = async () => {
     const query = 'INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES(?, ?, ?, ?)';
     connection.query(query, [first, last, role, manager], (err, result) => {
       if (err) throw err;
-      console.log(`NEW EMPLOYEE ADDED:${first_name} ${last_name} `, result);
+      console.log(`NEW EMPLOYEE ADDED:${first_name} ${last_name} `);
       connection.end();
     });
   } catch (err) {
+    console.log(err);
     connection.end();
   }
 }
 
-// // const addRole = () => {
-// //   connection.query
-// // }
-
-const addDepartment = async () => {
+const addRole = async () => {
   try {
-    const newDepartment = await inquirer.prompt([
+    const { title, salary, department } = await inquirer.prompt([
       {
-        name: 'addDepartment',
+        name: 'title',
         type: 'input',
-        message: 'What department would you like to add?'
-      }
+        message: 'What is the title of the new role?',
+
+      },
+      {
+        name: 'salary',
+        type: 'input',
+        message: 'What is the salary for the new role?',
+      },
+      {
+        name: 'department',
+        type: 'list',
+        message: 'What department is the new role for?',
+        choices: [
+
+          { name: 'Engineer', value: 1 },
+          { name: 'Sales', value: 2 },
+          { name: 'HR', value: 3 },
+          { name: 'Legal', value: 4 }
+
+        ]
+      },
     ]);
-    connection.query(`INSERT INTO departments(name) VALUES (?)`, newDepartment.name);
-    console.log(`NEW DEPARTMENT ADDED:${newDepartment}`, result);
-    connection.end();
+    const query = 'INSERT INTO role (title, salary, department_id) VALUES(?, ?, ?)';
+    connection.query(query, [title, salary, department]), (err, result) => {
+      if (err) throw err;
+      console.log(`NEW ROLE ADDED:${title}`);
+      connection.end();
+    }
   } catch (err) {
+    console.log(err);
     connection.end();
   }
 };
+  
+
+// const addDepartment = async () => {
+//   try {
+//     const newDepartment = await inquirer.prompt([
+//       {
+//         name: 'addDept',
+//         type: 'input',
+//         message: 'What department would you like to add?'
+//       }
+//     ]);
+//     connection.query(`INSERT INTO departments(name) VALUES (?)`, newDepartment.name);
+//     console.log(`NEW DEPARTMENT ADDED:${newDepartment.name}`, result);
+//     connection.end();
+//   } catch (err) {
+//     connection.end();
+//   }
+// };
 
 // const updateEmpRole = () => {
 //   connection.query
