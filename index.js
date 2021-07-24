@@ -184,7 +184,7 @@ const addRole = async () => {
     ]);
     const query = 'INSERT INTO role SET ?'
     console.log(typeof title, typeof salary, typeof department);
-    connection.query(query, {title, salary, department_id:department}, (err, result) => {
+    connection.query(query, { title, salary, department_id: department }, (err, result) => {
       console.log(`NEW ROLE ADDED:${title}`);
       connection.end();
     });
@@ -193,24 +193,25 @@ const addRole = async () => {
     connection.end();
   }
 };
-  
 
-// const addDepartment = async () => {
-//   try {
-//     const newDepartment = await inquirer.prompt([
-//       {
-//         name: 'addDept',
-//         type: 'input',
-//         message: 'What department would you like to add?'
-//       }
-//     ]);
-//     connection.query(`INSERT INTO departments(name) VALUES (?)`, newDepartment.name);
-//     console.log(`NEW DEPARTMENT ADDED:${newDepartment.name}`, result);
-//     connection.end();
-//   } catch (err) {
-//     connection.end();
-//   }
-// };
+
+const addDepartment = async () => {
+  try {
+    const newDept = await inquirer.prompt([
+      {
+        name: "name",
+        type: 'input',
+        message: "What Department would you like to add?"
+      }
+    ]);
+    connection.query('INSERT INTO departments(name) VALUES(?)', newDept.name);
+    console.log(`New department added: ${newDept.name}`);
+    
+  } catch (err) {
+    console.log(err);
+    connection.end();
+  }
+}
 
 // const updateEmpRole = () => {
 //   connection.query
