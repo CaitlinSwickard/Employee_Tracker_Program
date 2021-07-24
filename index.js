@@ -70,10 +70,12 @@ const selections = async (userChoice) => {
   }
 };
 
-// use try catch statements
+
 const viewEmployee = () => {
-  connection.query('SELECT * FROM employees', (err, employees) => {
-    // want to see more of the tables put together like in photo
+  const query = `SELECT employees.id, employees.first_name, employees.last_name, role.title, departments.name AS department, role.salary, 
+  CONCAT(manager.first_name, ' ', manager.last_name) AS Manager FROM employees LEFT JOIN role on employees.role_id = role.id 
+  LEFT JOIN departments on role.department_id = departments.id LEFT JOIN employees manager on manager.id = employees.manager_id;`
+  connection.query(query, (err, employees) => {
     if (err) throw err;
     console.table(employees);
     connection.end();
@@ -81,7 +83,8 @@ const viewEmployee = () => {
 };
 
 const viewRole = () => {
-  connection.query('SELECT * FROM role', (err, role) => {
+  const query = `select id AS Role_ID, title, salary AS Salaries from role;`;
+  connection.query(query, (err, role) => {
     if (err) throw err;
     console.table(role);
     connection.end();
@@ -89,7 +92,8 @@ const viewRole = () => {
 };
 
 const viewDepartment = () => {
-  connection.query('SELECT * FROM departments', (err, departments) => {
+  const query = `select id AS Dept_ID, name AS departments from departments;`;
+  connection.query(query, (err, departments) => {
     if (err) throw err;
     console.table(departments);
     connection.end();
@@ -116,12 +120,12 @@ const addEmployee = async () => {
         message: 'What is the employees role?',
         choices: [
 
-          {name: 'Lead Engineer', value: 1},
-          {name: 'Engineer', value: 2}, 
-          {name: 'Sales Lead', value: 3},
-          {name: 'Sales Person', value: 4},
-          {name: 'HR', value: 5},
-          {name: 'Lawyer', value: 6},
+          { name: 'Lead Engineer', value: 1 },
+          { name: 'Engineer', value: 2 },
+          { name: 'Sales Lead', value: 3 },
+          { name: 'Sales Person', value: 4 },
+          { name: 'HR', value: 5 },
+          { name: 'Lawyer', value: 6 },
 
         ]
       },
@@ -130,21 +134,21 @@ const addEmployee = async () => {
         type: 'list',
         message: 'Who is the employees manager?',
         choices: [
-          
-            {name: 'Ali Wong', value: 1},
-            {name: 'Amy Schumer', value: 4},
-            {name: 'Tom Segura', value: 6},
-            {name: 'Iliza Shlesinger', value: 9},
-            {name: 'Bernie Mac', value: 10},
-            {name: 'None', value: null}
-         
+
+          { name: 'Ali Wong', value: 1 },
+          { name: 'Amy Schumer', value: 4 },
+          { name: 'Tom Segura', value: 6 },
+          { name: 'Iliza Shlesinger', value: 9 },
+          { name: 'Bernie Mac', value: 10 },
+          { name: 'None', value: null }
+
         ]
       }
     ]);
     const query = 'INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES(?, ?, ?, ?)';
     connection.query(query, [first, last, role, manager], (err, result) => {
       if (err) throw err;
-      console.log('NEW EMPLOYEE ADDED:', result);
+      console.log(`NEW EMPLOYEE ADDED:${first_name} ${last_name} `, result);
       connection.end();
     });
   } catch (err) {
@@ -152,25 +156,22 @@ const addEmployee = async () => {
   }
 }
 
-// const addRole = () => {
-//   connection.query
-// }
+// // const addRole = () => {
+// //   connection.query
+// // }
 
 const addDepartment = async () => {
   try {
-    const { name } = await inquirer.prompt([
+    const newDepartment = await inquirer.prompt([
       {
         name: 'addDepartment',
         type: 'input',
         message: 'What department would you like to add?'
       }
     ]);
-    const query = 'INSERT INTO departments (name) VALUES(?)';
-    connection.query(query, [name], (err, result) => {
-      if (err) throw err;
-      console.log('New department added', result);
-      connection.end();
-    });
+    connection.query(`INSERT INTO departments(name) VALUES (?)`, newDepartment.name);
+    console.log(`NEW DEPARTMENT ADDED:${newDepartment}`, result);
+    connection.end();
   } catch (err) {
     connection.end();
   }
