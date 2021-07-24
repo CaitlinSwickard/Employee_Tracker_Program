@@ -146,7 +146,7 @@ const addEmployee = async () => {
     const query = 'INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES(?, ?, ?, ?)';
     connection.query(query, [first, last, role, manager], (err, result) => {
       if (err) throw err;
-      console.log(`NEW EMPLOYEE ADDED:${first_name} ${last_name} `);
+      console.log(`NEW EMPLOYEE ADDED:${first} ${last} `);
       connection.end();
     });
   } catch (err) {
@@ -162,11 +162,10 @@ const addRole = async () => {
         name: 'title',
         type: 'input',
         message: 'What is the title of the new role?',
-
       },
       {
         name: 'salary',
-        type: 'input',
+        type: 'number',
         message: 'What is the salary for the new role?',
       },
       {
@@ -183,12 +182,12 @@ const addRole = async () => {
         ]
       },
     ]);
-    const query = 'INSERT INTO role (title, salary, department_id) VALUES(?, ?, ?)';
-    connection.query(query, [title, salary, department]), (err, result) => {
-      if (err) throw err;
+    const query = 'INSERT INTO role SET ?'
+    console.log(typeof title, typeof salary, typeof department);
+    connection.query(query, {title, salary, department_id:department}, (err, result) => {
       console.log(`NEW ROLE ADDED:${title}`);
       connection.end();
-    }
+    });
   } catch (err) {
     console.log(err);
     connection.end();
