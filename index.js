@@ -12,13 +12,14 @@ const connection = mysql.createConnection({
   database: 'employee_db',
 });
 
-// connection and initial prompt questions
+// connection 
 connection.connect(async (err) => {
   if (err) throw err;
   console.log(`Employee Tracker connection id ${connection.threadId}\n`);
   start();
 });
 
+// main menu of prompt questions
 const start = async () => {
   try {
     const mainQuestions = await inquirer.prompt([
@@ -33,6 +34,7 @@ const start = async () => {
           'Add employee?',
           'Add role?',
           'Add department?',
+          'Update employee role?',
           'Exit?'
         ],
       }
@@ -43,7 +45,7 @@ const start = async () => {
   }
 };
 
-
+// if block for main questions
 const selections = async (userChoice) => {
 
   if (userChoice === 'View all employees?') {
@@ -64,13 +66,16 @@ const selections = async (userChoice) => {
   if (userChoice === 'Add department?') {
     addDepartment();
   }
+  if (userChoice === 'Update employee role?') {
+    updateEmpRole();
+  }
   if (userChoice === 'Exit?') {
     console.log('Thank you for using Employee Tracker.')
     connection.end();
   }
 };
 
-
+// function to view table for all employees
 const viewEmployee = () => {
   const query = `SELECT * FROM employees`;
   connection.query(query, (err, employees) => {
@@ -81,6 +86,7 @@ const viewEmployee = () => {
   });
 };
 
+// function to view table for roles
 const viewRole = () => {
   const query = `SELECT * FROM role`;
   connection.query(query, (err, role) => {
@@ -91,6 +97,7 @@ const viewRole = () => {
   });
 };
 
+// function to view table for departments
 const viewDepartment = () => {
   const query = `SELECT * FROM departments`;
   connection.query(query, (err, departments) => {
@@ -101,6 +108,7 @@ const viewDepartment = () => {
   });
 };
 
+// function to add employee to employees table
 const addEmployee = async () => {
   try {
     const { first, last, role, manager } = await inquirer.prompt([
@@ -108,7 +116,6 @@ const addEmployee = async () => {
         name: 'first',
         type: 'input',
         message: 'What is the employees first name?',
-
       },
       {
         name: 'last',
@@ -159,6 +166,7 @@ const addEmployee = async () => {
   }
 }
 
+// function to add a role to role table
 const addRole = async () => {
   try {
     const { title, salary, department } = await inquirer.prompt([
@@ -197,7 +205,7 @@ const addRole = async () => {
   }
 };
 
-
+// function to add department to department table
 const addDepartment = async () => {
   try {
     const newDept = await inquirer.prompt([
@@ -216,3 +224,40 @@ const addDepartment = async () => {
   }
 };
 
+// function to update employee role id
+const updateEmpRole = async () => {
+  connection.query('SELECT last_name from employees', async (err, res) => {
+    try {
+      const { last_name } = await inquirer.prompt([
+        {
+          name: 'last_name',
+          type: 'list',
+          message: 'What is the last name of the employee you want to change the role ID for?',
+          choices: res.map(({ last_name }) => last_name),
+        }
+      ]);
+
+      const { role_id } = await inquirer.prompt([
+        {
+          name: 'role_id',
+          type: 'number',
+          message: 'What would you like to update the role ID number to  ?',
+
+        }
+      ]);
+
+      const query = 'UPDATE employees SET role_id =? WHERE last_name =?';
+      connection.query(query, [parseInt(role_id), last_name], (err, res) => {
+        if (err) throw err;
+        console.log(`${last_name} updated Role ID to: ${role_id}`)
+
+      })
+      start();
+    } catch (error) {
+      console.log(error);
+      connection.end();
+
+    }
+  })
+
+}
