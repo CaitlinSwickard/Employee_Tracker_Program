@@ -16,6 +16,10 @@ const connection = mysql.createConnection({
 connection.connect(async (err) => {
   if (err) throw err;
   console.log(`Employee Tracker connection id ${connection.threadId}\n`);
+  start();
+});
+
+const start = async () => {
   try {
     const mainQuestions = await inquirer.prompt([
       {
@@ -29,7 +33,6 @@ connection.connect(async (err) => {
           'Add employee?',
           'Add role?',
           'Add department?',
-          'Update employee role?',
           'Exit?'
         ],
       }
@@ -38,7 +41,7 @@ connection.connect(async (err) => {
   } catch (e) {
     console.log(e);
   }
-});
+};
 
 
 const selections = async (userChoice) => {
@@ -61,40 +64,40 @@ const selections = async (userChoice) => {
   if (userChoice === 'Add department?') {
     addDepartment();
   }
-  if (userChoice === 'Update employee role?') {
-    updateEmpRole();
-  }
   if (userChoice === 'Exit?') {
     console.log('Thank you for using Employee Tracker.')
-    exit();
+    connection.end();
   }
 };
 
 
 const viewEmployee = () => {
-  const query = `SELECT * FROM employees INNER JOIN role ON employees.role_id = role.id`
+  const query = `SELECT * FROM employees`;
   connection.query(query, (err, employees) => {
     if (err) throw err;
     console.table(employees);
-    connection.end();
+    start();
+
   });
 };
 
 const viewRole = () => {
-  const query = `SELECT * FROM departments`;
+  const query = `SELECT * FROM role`;
   connection.query(query, (err, role) => {
     if (err) throw err;
     console.table(role);
-    connection.end();
+    start();
+
   });
 };
 
 const viewDepartment = () => {
-  const query = `SELECT * FROM role`;
+  const query = `SELECT * FROM departments`;
   connection.query(query, (err, departments) => {
     if (err) throw err;
     console.table(departments);
-    connection.end();
+    start();
+
   });
 };
 
@@ -147,7 +150,8 @@ const addEmployee = async () => {
     connection.query(query, [first, last, role, manager], (err, result) => {
       if (err) throw err;
       console.log(`NEW EMPLOYEE ADDED:${first} ${last} `);
-      connection.end();
+      start();
+
     });
   } catch (err) {
     console.log(err);
@@ -182,11 +186,10 @@ const addRole = async () => {
         ]
       },
     ]);
-    const query = 'INSERT INTO role SET ?'
-    console.log(typeof title, typeof salary, typeof department);
-    connection.query(query, { title, salary, department_id: department }, (err, result) => {
+    const query = 'INSERT INTO role SET ?';
+    connection.query(query, { title, salary, department_id: department }, (err, title) => {
       console.log(`NEW ROLE ADDED:${title}`);
-      connection.end();
+      start();
     });
   } catch (err) {
     console.log(err);
@@ -206,17 +209,10 @@ const addDepartment = async () => {
     ]);
     connection.query('INSERT INTO departments(name) VALUES(?)', newDept.name);
     console.log(`New department added: ${newDept.name}`);
-    
+    start();
   } catch (err) {
     console.log(err);
     connection.end();
   }
-}
+};
 
-// const updateEmpRole = () => {
-//   connection.query
-// }
-
-// function exit() {
-// does this need to exist or can i exit the function from the main prompt??
-// }
