@@ -63,10 +63,6 @@ INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES
 ('Bernie', 'Mac', 6, null);
 
 
--- SELECT * FROM employees;
--- how do i select to show all the tables together??  
-
--- mysql -u root -p
 
 
 

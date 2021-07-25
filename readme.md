@@ -4,7 +4,7 @@ Employee Tracker is a command-line application that allows users to add, view  o
 
   * [Installation](#install)
   * [Usage](#usage)
-  * For a video on using the app click [here.]()
+  * For a video on using the app click [here.](https://drive.google.com/file/d/1_L5j0z9T9laZUqStGNoPbdfugNux2fu5/view?usp=sharing)
 
 
 

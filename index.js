@@ -12,12 +12,12 @@ const connection = mysql.createConnection({
   database: 'employee_db',
 });
 
-// connection 
 connection.connect(async (err) => {
   if (err) throw err;
   console.log(`Employee Tracker connection id ${connection.threadId}\n`);
   start();
 });
+
 
 // main menu of prompt questions
 const start = async () => {
@@ -122,6 +122,7 @@ const addEmployee = async () => {
         type: 'input',
         message: 'What is the employees last name?',
       },
+       // match by key value pairs for role id numbers
       {
         name: 'role',
         type: 'list',
@@ -137,6 +138,7 @@ const addEmployee = async () => {
 
         ]
       },
+      // match by key value pairs for manager id numbers
       {
         name: 'manager',
         type: 'list',
@@ -180,6 +182,7 @@ const addRole = async () => {
         type: 'number',
         message: 'What is the salary for the new role?',
       },
+       // match by key value pairs for role id numbers
       {
         name: 'department',
         type: 'list',
@@ -240,8 +243,18 @@ const updateEmpRole = async () => {
       const { role_id } = await inquirer.prompt([
         {
           name: 'role_id',
-          type: 'number',
-          message: 'What would you like to update the role ID number to  ?',
+          type: 'list',
+          message: 'What would you like to update the employee role to?',
+          choices: [
+
+            { name: 'Lead Engineer', value: 1 },
+            { name: 'Engineer', value: 2 },
+            { name: 'Sales Lead', value: 3 },
+            { name: 'Sales Person', value: 4 },
+            { name: 'HR', value: 5 },
+            { name: 'Lawyer', value: 6 },
+
+          ]
 
         }
       ]);
@@ -259,5 +272,4 @@ const updateEmpRole = async () => {
 
     }
   })
-
-}
+};
